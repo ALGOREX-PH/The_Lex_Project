@@ -83,7 +83,6 @@ elif options == "About Us" :
      st.write("Pinoy AI Engineer and Competitive Programmer")
      st.text("Connect with me via Linkedin : https://www.linkedin.com/in/algorexph/")
      st.text("Kaggle Account : https://www.kaggle.com/daniellebagaforomeer")
-     st.title("Shyra Carpio")
      st.write("\n")
 
 
