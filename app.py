@@ -80,9 +80,13 @@ elif options == "About Us" :
      st.subheader("About Us")
      st.write("# Algorex PH")
      st.image('images/Meer.jpg')
-     st.write("Pinoy AI Engineer and Competitive Programmer")
+     st.write("## Pinoy AI Engineer and Competitive Programmer")
      st.text("Connect with me via Linkedin : https://www.linkedin.com/in/algorexph/")
      st.text("Kaggle Account : https://www.kaggle.com/daniellebagaforomeer")
+     st.write("# Kristine Shyra Carpio")
+     st.image('images/Shyra.jpeg')
+     st.write("## Operations Manager at Homely Spaces")
+     st.text("Connect with me via Linkedin : https://www.linkedin.com/in/kristine-shyra-carpio-618a18214/")
      st.write("\n")
 
 
