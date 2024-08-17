@@ -33,8 +33,8 @@ with st.sidebar :
 
     options = option_menu(
         "Dashboard", 
-        ["Home", "About Us", "Model"],
-        icons = ['book', 'globe', 'tools'],
+        ["Home", "About Us", "Model", "Model(Filipino)"],
+        icons = ['book', 'globe', 'tools', "tools"],
         menu_icon = "book", 
         default_index = 0,
         styles = {
@@ -105,8 +105,91 @@ elif options == "Model" :
              soup = BeautifulSoup(response.content, 'html.parser')
              prompt = "What do you think that we can improve on this website, here is the html structure : " + str(soup) + "/n" + "Make the Feedback detailed and elaborate on things that should be improved on the Law Firm's Website. Additionally Please assess the Law firm website's chatbox if it is available, contact forms and the website's overall attractiveness to potential clients."
              chat_session = model.start_chat(history=[{"role": "user", "parts": [prompt]}])
-             response = chat_session.send_message("Make the Feedback detailed and elaborate on things that should be improved on the Law Firm's Website. Additionally Please assess the Law firm website's chatbox if it is available, contact forms and the website's overall attractiveness to potential clients.")
+             message = """
+             Make the Feedback detailed and elaborate on things that should be improved on the Law Firm's Website. Additionally Please assess the Law firm website's chatbox if it is available, contact forms and the website's overall attractiveness to potential clients.
+
+             Here is a List that you need to fill up information on based on your findings on the website :
+             1. User Interface & Design
+             - Visual Appeal: Does the website have a professional, modern, and aesthetically pleasing design? Are the colors, fonts, and imagery aligned with the firm’s brand?
+             - Ease of Navigation: Is the site easy to navigate? Are menus and links clear and intuitive? Can users find key information with minimal clicks?
+             - Responsiveness: Does the site work well on all devices, including desktops, tablets, and mobile phones? Is the layout adaptive to different screen sizes?
+             - Loading Speed: Are the pages loading quickly? Is there any noticeable lag that could frustrate users?
+             - Accessibility: Is the site accessible to people with disabilities? Does it follow best practices for web accessibility (e.g., alt text for images, keyboard navigation)?
+
+             2. Chatbox Functionality (If Available)
+             - Availability and Visibility: Is the chatbox easy to locate on the website? Does it stand out without being intrusive?
+             - Response Time: How quickly does the chatbox respond to user inquiries? Are the responses timely and relevant?
+             - User Experience: Is the chatbox user-friendly? Does it guide users effectively through the conversation? Can users easily connect with a human representative if needed?
+             - Content Quality: Are the responses from the chatbox accurate, informative, and helpful? Does it handle a wide range of queries effectively?
+             - Integration: Does the chatbox integrate well with the overall design of the website? Does it enhance the user experience?
+
+             3. Contact Forms
+             - Ease of Use: Are the contact forms straightforward and simple to fill out? Are there clear instructions and labels for each field?
+             - Field Relevance: Are the fields relevant and necessary? Are users asked only for essential information?
+             - Validation and Feedback: Does the form validate inputs and provide clear error messages if something is filled out incorrectly? Is there immediate feedback or confirmation upon submission?
+             - Accessibility: Is the form accessible to all users, including those with disabilities? Does it follow best practices for web forms?
+             - Follow-up Process: Is there a clear indication of what will happen after the form is submitted? Do users receive a confirmation email or message, and is there a defined timeframe for a response?
+             4. Overall Attractiveness to Potential Clients
+             - First Impressions: Does the website create a strong first impression? Is it clear what services the law firm offers from the homepage?
+             - Content Relevance: Is the content on the website relevant and engaging? Does it effectively communicate the law firm’s expertise and value proposition?
+             - Trustworthiness: Are there elements on the site that build trust, such as client testimonials, case studies, or professional accolades?
+             - Calls to Action: Are there clear and compelling calls to action (CTAs) that guide users toward contacting the firm or scheduling a consultation?
+             - SEO Friendliness: Is the website optimized for search engines? Are there appropriate meta tags, keyword-rich content, and a clear structure that aids in discoverability?
+             """
+             response = chat_session.send_message(message)
     
-        st.success("Insight generated successfully!")
-        st.subheader(law_firm_website_address)
-        st.write(response.text)
+             st.success("Insight generated successfully!")
+             st.subheader(law_firm_website_address)
+             st.write(response.text)
+
+elif options == "Model(Filipino)" :
+     st.title('The Lex Project by Algorex Technologies')
+     st.subheader("Specify the Law Firm Website you want to review")
+     col1, col2, col3 = st.columns([1, 2, 1])
+
+     with col2:
+          law_firm_website_address = st.text_input("Law Firm Website Address", placeholder="www.lawfirm.com")
+          submit_button = st.button("Generate Insights")
+
+     if submit_button:
+        with st.spinner("Generating Insights"):
+             response = requests.get(law_firm_website_address)
+             soup = BeautifulSoup(response.content, 'html.parser')
+             prompt = "What do you think that we can improve on this website, here is the html structure : " + str(soup) + "/n" + "Make the Feedback detailed and elaborate on things that should be improved on the Law Firm's Website. Additionally Please assess the Law firm website's chatbox if it is available, contact forms and the website's overall attractiveness to potential clients."
+             chat_session = model.start_chat(history=[{"role": "user", "parts": [prompt]}])
+             message = """
+             Make the Feedback in Filipino, it has to detailed and elaborate on things that should be improved on the Law Firm's Website. Additionally Please assess the Law firm website's chatbox if it is available, contact forms and the website's overall attractiveness to potential clients.
+
+             Here is a List that you need to fill up information on based on your findings on the website :
+             1. User Interface & Design
+             - Visual Appeal: Does the website have a professional, modern, and aesthetically pleasing design? Are the colors, fonts, and imagery aligned with the firm’s brand?
+             - Ease of Navigation: Is the site easy to navigate? Are menus and links clear and intuitive? Can users find key information with minimal clicks?
+             - Responsiveness: Does the site work well on all devices, including desktops, tablets, and mobile phones? Is the layout adaptive to different screen sizes?
+             - Loading Speed: Are the pages loading quickly? Is there any noticeable lag that could frustrate users?
+             - Accessibility: Is the site accessible to people with disabilities? Does it follow best practices for web accessibility (e.g., alt text for images, keyboard navigation)?
+
+             2. Chatbox Functionality (If Available)
+             - Availability and Visibility: Is the chatbox easy to locate on the website? Does it stand out without being intrusive?
+             - Response Time: How quickly does the chatbox respond to user inquiries? Are the responses timely and relevant?
+             - User Experience: Is the chatbox user-friendly? Does it guide users effectively through the conversation? Can users easily connect with a human representative if needed?
+             - Content Quality: Are the responses from the chatbox accurate, informative, and helpful? Does it handle a wide range of queries effectively?
+             - Integration: Does the chatbox integrate well with the overall design of the website? Does it enhance the user experience?
+
+             3. Contact Forms
+             - Ease of Use: Are the contact forms straightforward and simple to fill out? Are there clear instructions and labels for each field?
+             - Field Relevance: Are the fields relevant and necessary? Are users asked only for essential information?
+             - Validation and Feedback: Does the form validate inputs and provide clear error messages if something is filled out incorrectly? Is there immediate feedback or confirmation upon submission?
+             - Accessibility: Is the form accessible to all users, including those with disabilities? Does it follow best practices for web forms?
+             - Follow-up Process: Is there a clear indication of what will happen after the form is submitted? Do users receive a confirmation email or message, and is there a defined timeframe for a response?
+             4. Overall Attractiveness to Potential Clients
+             - First Impressions: Does the website create a strong first impression? Is it clear what services the law firm offers from the homepage?
+             - Content Relevance: Is the content on the website relevant and engaging? Does it effectively communicate the law firm’s expertise and value proposition?
+             - Trustworthiness: Are there elements on the site that build trust, such as client testimonials, case studies, or professional accolades?
+             - Calls to Action: Are there clear and compelling calls to action (CTAs) that guide users toward contacting the firm or scheduling a consultation?
+             - SEO Friendliness: Is the website optimized for search engines? Are there appropriate meta tags, keyword-rich content, and a clear structure that aids in discoverability?
+             """
+             response = chat_session.send_message(message)
+    
+             st.success("Insight generated successfully!")
+             st.subheader(law_firm_website_address)
+             st.write(response.text)
