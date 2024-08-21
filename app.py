@@ -44,6 +44,11 @@ with st.sidebar :
         })
 
 
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
+
+if 'chat_session' not in st.session_state:
+    st.session_state.chat_session = None  # Placeholder for your chat session initialization
 
 # Options : Home
 if options == "Home" :
@@ -196,31 +201,24 @@ elif options == "Model(Filipino)" :
 
 
 if options == "Chat" :
-   # Step 1: Title and Instructions
-   st.title("Website Chat Initialization")
-   st.write("Please enter a website link to initialize the chat.")
+    st.title("Website Chat Initialization")
+    st.write("Please enter a website link to initialize the chat.")
 
-   # Step 2: Input field for website link
-   website_link = st.text_input("Website URL", "")
+    website_link = st.text_input("Website URL", "")
 
-   # Step 3: Button to initialize chat
-   if website_link:
-      if st.button("Initialize Chat"):
-         # Assuming there's a function to validate the link
-         if "http" in website_link:
-             # Proceed to chat after validating the link
-             st.success("Link validated. Initializing chat...")
-             # Add your chat initialization code here
-             response = requests.get(website_link)
-             soup = BeautifulSoup(response.content, 'html.parser')
-             system_prompt = "What do you think that we can improve on this website, here is the html structure : " + str(soup) + "/n" + "Make the Feedback detailed and elaborate on things that should be improved on the Law Firm's Website. Additionally Please assess the Law firm website's chatbox if it is available, contact forms and the website's overall attractiveness to potential clients."
-             def initialize_conversation(prompt):
-                 if 'messages' not in st.session_state:
-                    st.session_state.messages = []
-                    st.session_state.messages.append({"role": "user", "content": prompt})
-                    chat_session = model.start_chat(history = st.session_state.messages)
-                    message = """
-             Make the Feedback in Filipino, it has to detailed and elaborate on things that should be improved on the Law Firm's Website. Additionally Please assess the Law firm website's chatbox if it is available, contact forms and the website's overall attractiveness to potential clients.
+    if website_link:
+        if st.button("Initialize Chat"):
+            if "http" in website_link:
+                st.success("Link validated. Initializing chat...")
+                response = requests.get(website_link)
+                soup = BeautifulSoup(response.content, 'html.parser')
+                system_prompt = (
+                    "What do you think that we can improve on this website, here is the html structure : " + 
+                    str(soup) + "\nMake the Feedback detailed and elaborate on things that should be improved on the Law Firm's Website. "
+                    "Additionally Please assess the Law firm website's chatbox if it is available, contact forms and the website's overall attractiveness to potential clients."
+                )
+                message = """
+             Make the Feedback detailed and elaborate on things that should be improved on the Law Firm's Website. Additionally Please assess the Law firm website's chatbox if it is available, contact forms and the website's overall attractiveness to potential clients.
 
              Here is a List that you need to fill up information on based on your findings on the website :
              1. User Interface & Design
@@ -250,23 +248,31 @@ if options == "Chat" :
              - Calls to Action: Are there clear and compelling calls to action (CTAs) that guide users toward contacting the firm or scheduling a consultation?
              - SEO Friendliness: Is the website optimized for search engines? Are there appropriate meta tags, keyword-rich content, and a clear structure that aids in discoverability?
              """
-                    response = chat_session.send_message(message)
-                    st.session_state.messages.append({"role" : "user", "content" : message})
-                    st.session_state.messages.append({"role": "assistant", "content": response.text})
 
-             initialize_conversation(system_prompt)
+                def initialize_conversation(prompt):
+                    if not st.session_state.chat_session:
+                        st.session_state.chat_session = model.start_chat(history=st.session_state.messages)
+                    st.session_state.messages.append({"role": "user", "content": prompt})
+                    response = st.session_state.chat_session.send_message(prompt)
+                    st.session_state.messages.append({"role": "assistant", "content" : response.text})
+                    st.session_state.messages.append({'role' : "assistant", "content" : "Let's Continue the Conversation! ask me specific ways on how to improve the website."})
 
-             for messages in st.session_state.messages :
-                 if messages['role'] == 'system' : continue 
-                 else :
-                    with st.chat_message(messages["role"]):
-                         st.markdown(messages["content"])
+                initialize_conversation(system_prompt + "\n" + message)
 
-             if user_message := st.chat_input("Say something"):
-                with st.chat_message("user"):
-                     st.markdown(user_message)
-                st.session_state.messages.append({"role": "user", "content": user_message})
-                response = chat_session.send_message(user_message)
-                with st.chat_message("assistant"):
-                     st.markdown(response.text)
-                st.session_state.messages.append({"role": "assistant", "content": response.text})
+    # Display chat messages
+    for message in st.session_state.messages:
+        if message['role'] == 'system':
+            continue
+        with st.chat_message(message["role"]):
+             st.markdown(message["content"])
+
+    # Handle user input
+    if user_message := st.chat_input("Say something"):
+        with st.chat_message("user"):
+             st.markdown(user_message)
+        st.session_state.messages.append({"role": "user", "content": user_message})
+
+        response = st.session_state.chat_session.send_message(user_message)
+        with st.chat_message("assistant"):
+             st.markdown(response.text)
+        st.session_state.messages.append({"role": "assistant", "content": response.text})
